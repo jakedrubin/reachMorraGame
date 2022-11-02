@@ -6,8 +6,9 @@ const Player = {
   getHand: Fun([], UInt),
   guessSum: Fun([], UInt),
   seeOutcome: Fun([UInt], Null), 
-  fingers: UInt,
-
+  informTimeout: Fun([], Null),
+  playHand: Fun([UInt], Null),
+  predict: Fun([UInt], Null)
 }
 
 export const main = Reach.App(() => {
