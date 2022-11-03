@@ -114,3 +114,4 @@ class Attacher extends Player{
   }
   render () { return renderView(this, AttacherViews) }
 }
+renderDOM(<App />)
