@@ -92,3 +92,25 @@ class Deployer extends Player{
   render () { return renderView(this, DeployerViews); }
 }
 
+class Attacher extends Player{
+  constructor(props){
+    super(props);
+    this.state = {view: 'Attach'};
+  }
+  attach(ctcInfoStr){
+    const ctc = this.props.acc.contract(backend, JSON.parse(ctcInfoStr));
+    this.setState({view: 'Attaching'})
+    backend.Bob(ctc, this);
+  }
+  async acceptWager(wagerAtomic){
+    const wager = reach.formatCurrency(wagerAtomic, 4);
+    return await new Promise(resolveAcceptedP => {
+      this.setState({view: 'AcceptTerms', wager, resolveAcceptedP});
+    });
+  }
+  termsAccepted(){
+    this.state.resolveAcceptedP();
+    this.setState({view: 'WaitingForTurn'});
+  }
+  render () { return renderView(this, AttacherViews) }
+}
