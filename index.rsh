@@ -87,9 +87,7 @@ export const main = Reach.App(() => {
 
     outcome = (((guessAlice || guessBob) == tot) && (guessAlice != guessBob)) ? 
      (guessAlice == tot ? A_WINS  : B_WINS) : DRAW;
-    continue;
-    
-
+    continue;  
     
   }
   assert(outcome == A_WINS || outcome == B_WINS);
