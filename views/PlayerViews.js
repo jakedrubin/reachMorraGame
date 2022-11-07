@@ -8,7 +8,7 @@ const exports = {};
 exports.GetHand = class extends React.Component {
   render() {
     const {parent, playable, hand} = this.props;
-    return (
+    return ( 
       <div>
         {hand ? 'It was a draw! Pick again.' : ''}
         <br />
@@ -29,6 +29,18 @@ exports.GetHand = class extends React.Component {
           disabled={!playable}
           onClick={() => parent.playHand(2)}
         >2</button>
+        <button
+          disabled={!playable}
+          onClick={() => parent.playHand(3)}
+        >3</button>
+        <button
+          disabled={!playable}
+          onClick={() => parent.playHand(4)}
+        >4</button>
+        <button
+          disabled={!playable}
+          onClick={() => parent.playHand(5)}
+        >5</button>
       </div>
     );
   }
@@ -37,10 +49,10 @@ exports.GetHand = class extends React.Component {
 
 exports.GuessSum = class extends React.Component {
   render() {
-    const {parent, playable, hand} = this.props;
+    const {parent, playable, guess} = this.props;
     return (
       <div>
-        {hand ? 'It was a draw! Pick again.' : ''}
+        {guess ? 'It was a draw! Pick again.' : ''}
         <br />
         {!playable ? 'Please wait...' : ''}
         <br />
