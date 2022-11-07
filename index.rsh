@@ -2,13 +2,39 @@
 
 const [ isOutcome, B_WINS, DRAW, A_WINS ] = makeEnum(3);
 
+const winner = function(handA, handB, guessA, guessB){
+  const tot = handA + handB;
+  const AWins = (guessA == tot ? true : false)
+  const BWins = (guessB == tot ? true : false)
+  if (AWins &&!BWins) return A_WINS;
+  else if (BWins && !AWins) return B_WINS;
+  else return DRAW;
+}
+
+assert(winner(1, 0, 1, 0) == A_WINS);
+assert(winner(0, 1, 0, 1) == B_WINS);
+assert(winner(1, 1, 2, 2) == DRAW);
+assert(winner(1, 1, 5, 6) == DRAW);
+
+forall(UInt, handA =>
+  forall(UInt, handB =>
+    forall(UInt, guessA =>
+      forall(UInt, guessB =>
+        assert(isOutcome(winner(handA, handB, guessA, guessB)))))));
+
+forall(UInt, handA =>
+  forall(UInt, handB =>
+    forall(UInt, guessC =>
+      assert(winner(handA, handB, guessC, guessC) == DRAW))));
+
 const Player = {
+  ...hasRandom,
   getHand: Fun([], UInt),
   guessSum: Fun([], UInt),
   seeOutcome: Fun([UInt], Null), 
   informTimeout: Fun([], Null),
-  playHand: Fun([UInt], Null),
-  predict: Fun([UInt], Null)
+  //playHand: Fun([UInt], Null),
+  //predict: Fun([UInt], Null)
 }
 
 export const main = Reach.App(() => {
@@ -19,6 +45,7 @@ export const main = Reach.App(() => {
   })
   const Bob = Participant('Bob', {
     ...Player,
+    acceptWager: Fun([UInt], Null),
   })
   init()
 
@@ -42,6 +69,7 @@ export const main = Reach.App(() => {
     .timeout(relativeTime(deadline), () => closeTo(Alice, informTimeout))
 
   var [outcome] = [DRAW];
+  invariant(balance() == 2 * amount && isOutcome(outcome));
   while (outcome == DRAW) {
     commit();
     Alice.only(() => {
@@ -75,26 +103,16 @@ export const main = Reach.App(() => {
     checkCommitment(commitAliceH, saltAliceH, handAlice);
     checkCommitment(commitAliceG, saltAliceG, guessAlice);
 
-    /*
-    if(guessAlice == guessBob){ outcome = DRAW }
-    else {
-      const tot = handAlice + handBob;
-      
-      if (tot == guessAlice) { outcome = A_WINS; } 
-      else if (tot == guessBob) { outcome = B_WINS; }
-    }*/
-    //outcome = winner(handAlice, handBob);
-
-    outcome = (((guessAlice || guessBob) == tot) && (guessAlice != guessBob)) ? 
-     (guessAlice == tot ? A_WINS  : B_WINS) : DRAW;
-    continue;  
-    
+    outcome = winner(handAlice, handBob, guessAlice, guessBob);
+    continue;      
   }
   assert(outcome == A_WINS || outcome == B_WINS);
   transfer(2 * amount).to(outcome == A_WINS ? Alice : Bob);
-  commit()
+  commit();
 
   each([Alice, Bob], () => {
     interact.seeOutcome(outcome);
   });
+
+  exit();
 })
