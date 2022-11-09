@@ -8,3 +8,4 @@ then Bob does the same. The game continues until someone wins by guessing the su
 
 index.rsh defines the backend logic of the game
 index.js, index.css, and the views folder define the frontend GUI
+indexOGFmt.mjs and indexReactFmt.mjs can be ignored, they are old versions of index from before the repo started
