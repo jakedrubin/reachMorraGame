@@ -54,16 +54,32 @@ exports.FundAccount = class extends React.Component {
 }
 
 exports.DeployerOrAttacher = class extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: '', 
+    };
+  }
+  updateName = (event) => {
+    this.setState({ name: event.target.value });
+  }
   render() {
     const {parent} = this.props;
     return (
       <div>
-        Please select a role:
+        <label>
+          Enter Your Name:
+          <input
+            type="text"
+            placeholder="Enter your name"
+            onChange={this.updateName}
+          />
+        </label>
+        <h1>Hello, {this.state.name}!</h1>
+        <h3>Please select a role:</h3>
         <br />
         <p>
-          <button
-            onClick={() => parent.selectDeployer()}
-          >Deployer</button>
+          <button onClick={() => parent.selectDeployer()}>Deployer</button>
           <br /> Set the wager, deploy the contract.
         </p>
         <p>
